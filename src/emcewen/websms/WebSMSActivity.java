@@ -11,6 +11,6 @@ public class WebSMSActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        super.startService(new Intent(C2DMRegistrationService.REGISTER_WITH_C2DM));
+        //super.startService(new Intent(C2DMRegistrationService.REGISTER_WITH_C2DM));
     }
 }
