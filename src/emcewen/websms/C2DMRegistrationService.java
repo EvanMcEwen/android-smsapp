@@ -116,27 +116,6 @@ public class C2DMRegistrationService extends IntentService {
     
     private void registerForPush(String regID){
     	Log.d(TAG, "Register with WebApp!");
-    	
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/push_users");
-
-        try {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-            nameValuePairs.add(new BasicNameValuePair("push_user[regID]", regID));
-            nameValuePairs.add(new BasicNameValuePair("push_user[deviceID]", ((TelephonyManager)this.getSystemService(TELEPHONY_SERVICE)).getDeviceId().toString()));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-            // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(httppost);
-            
-        } catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-        }
-    	
-    	//For now just unregister right away
     	//this.unregisterFromC2dm();
     }
 }

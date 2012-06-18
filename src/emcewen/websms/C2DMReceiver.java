@@ -39,6 +39,8 @@ public class C2DMReceiver extends BroadcastReceiver {
         } else if (registrationId != null) {
         	//We have a successful C2DM registration yay!
                 Log.d(TAG, "Registered with registration ID [" + registrationId + "]");
+                
+            //Try to use a local broadcast so that we can handle the WebApp registration in the main activity
             Intent serviceIntent = new Intent(C2DMRegistrationService.REGISTER_WITH_MYSERVER);
             serviceIntent.putExtra(C2DMRegistrationService.REGISTRATION_ID,
                     registrationId);
