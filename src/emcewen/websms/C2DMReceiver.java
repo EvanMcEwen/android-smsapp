@@ -40,11 +40,11 @@ public class C2DMReceiver extends BroadcastReceiver {
         	//We have a successful C2DM registration yay!
                 Log.d(TAG, "Registered with registration ID [" + registrationId + "]");
                 
-            //Try to use a local broadcast so that we can handle the WebApp registration in the main activity
-            Intent serviceIntent = new Intent(C2DMRegistrationService.REGISTER_WITH_MYSERVER);
-            serviceIntent.putExtra(C2DMRegistrationService.REGISTRATION_ID,
-                    registrationId);
-            context.startService(serviceIntent);
+            //Try to use a broadcast so that we can handle the WebApp registration in the main activity
+                Intent broadcast = new Intent(WebSMSActivity.PUSH_READY);
+                broadcast.putExtra(C2DMRegistrationService.REGISTRATION_ID,registrationId);
+                context.sendBroadcast(broadcast);
+                Log.d(TAG, "Broadcast Sent: [" + WebSMSActivity.PUSH_READY + "]");
         } else {
                 Log.d(TAG, "Other registration response: " + intent.getExtras());
         }

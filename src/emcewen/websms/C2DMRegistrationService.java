@@ -25,11 +25,18 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -41,11 +48,11 @@ public class C2DMRegistrationService extends IntentService {
     private static final String TAG = C2DMRegistrationService.class.getSimpleName();
 
     public static final String REGISTRATION_ID = "registration_id";
+    public static final String PUSH_USERNAME = "emcewen.websms.PUSH_USERNAME";
     public static final String REGISTER_WITH_MYSERVER = "emcewen.websms.SERVER_REGISTER";
     public static final String REGISTER_WITH_C2DM = "emcewen.websms.C2DM_REGISTER";
     public static final String UNREGISTER_WITH_MYSERVER = "emcewen.websms.SERVER_UNREGISTER";
     public static final String UNREGISTER_WITH_C2DM = "emcewen.websms.C2DM_UNREGISTER";
-    
 
     public C2DMRegistrationService() {
         super(TAG);
@@ -56,7 +63,7 @@ public class C2DMRegistrationService extends IntentService {
         String action = intent.getAction();
         
         if (REGISTER_WITH_MYSERVER.equals(action)) {
-            this.registerForPush(intent.getStringExtra(REGISTRATION_ID));
+            this.registerForPush(intent.getStringExtra(REGISTRATION_ID),intent.getStringExtra(PUSH_USERNAME));
         }
         else if (UNREGISTER_WITH_C2DM.equals(action)){
         	this.unregisterFromC2dm();
@@ -114,8 +121,38 @@ public class C2DMRegistrationService extends IntentService {
         super.startService(registrationIntent);
     }
     
-    private void registerForPush(String regID){
+    private void registerForPush(String regID, String username){
     	Log.d(TAG, "Register with WebApp!");
+   		HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/devices");
+        JSONObject json = new JSONObject();
+        TelephonyManager telephonyManager = (TelephonyManager)this.getSystemService(TELEPHONY_SERVICE);
+
+        try {
+            // Add your data
+        	json.put("username", username);
+        	json.put("reg_id", regID);
+        	json.put("device_id", telephonyManager.getDeviceId());
+        	json.put("nickname", "");
+        	StringEntity se = new StringEntity(json.toString());
+        	se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            httppost.setEntity(se);
+
+            // Execute HTTP Post Request
+            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            String response = httpclient.execute(httppost, responseHandler);
+            
+            if(response!=null){
+                
+            }
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+        } catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	//this.unregisterFromC2dm();
     }
 }
