@@ -143,7 +143,8 @@ public class C2DMRegistrationService extends IntentService {
             String response = httpclient.execute(httppost, responseHandler);
             
             if(response!=null){
-                
+                Intent successIntent = new Intent(WebSMSActivity.PUSH_SUCCESS);
+                super.sendBroadcast(successIntent);
             }
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block

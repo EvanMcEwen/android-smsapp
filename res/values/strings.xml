@@ -4,5 +4,6 @@
     <string name="login">Please Login To WebSMS</string>
 	<string name="loginButton">Login</string>
     <string name="app_name">WebSMS</string>
+    <string name="config_app_name">Web SMS Configuration</string>
 
 </resources>
