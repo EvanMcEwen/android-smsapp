@@ -154,6 +154,5 @@ public class C2DMRegistrationService extends IntentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	//this.unregisterFromC2dm();
     }
 }
