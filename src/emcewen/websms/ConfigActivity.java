@@ -1,7 +1,7 @@
 package emcewen.websms;
 
 import android.app.Activity;
-import android.content.IntentFilter;
+import android.content.Intent;
 import android.os.Bundle;
 
 public class ConfigActivity extends Activity {
