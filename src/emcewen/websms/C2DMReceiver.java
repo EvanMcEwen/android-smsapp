@@ -54,10 +54,11 @@ public class C2DMReceiver extends BroadcastReceiver {
         Log.d(TAG, "Handling C2DM notification");
         
         Bundle extras = intent.getExtras();
-        String message = (String)extras.get("send_sms");
-        
-        Toast.makeText(context,"Message: " + message,1).show();
-        String action = intent.getStringExtra(C2DM_DATA_ACTION);
-            Log.d(TAG, "Unexpected action: [" + action + "]: " + intent.getExtras());
+        if (extras.getString(C2DM_DATA_ACTION).equals("NEW_SMS_TO_SEND"))
+        {
+        	Intent serviceIntent = new Intent(SMSService.NEW_SMS_TO_SEND);
+        	serviceIntent.putExtra("msg_id", extras.getString("msg_id"));
+        	context.startService(serviceIntent);
+        }
     }
 }
