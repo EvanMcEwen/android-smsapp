@@ -5,5 +5,6 @@
 	<string name="loginButton">Login</string>
     <string name="app_name">WebSMS</string>
     <string name="config_app_name">Web SMS Configuration</string>
+    <string name="syncButton">Sync Messages</string>
 
 </resources>
