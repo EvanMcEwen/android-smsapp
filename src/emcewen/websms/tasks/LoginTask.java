@@ -1,4 +1,4 @@
-package emcewen.websms;
+package emcewen.websms.tasks;
 
 import java.io.IOException;
 
@@ -14,6 +14,8 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import emcewen.websms.WebSMSActivity;
+
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -22,7 +24,7 @@ import android.widget.Toast;
 public class LoginTask extends AsyncTask<String,Void,String> 
 {
 	private ProgressDialog dialog;
-	protected WebSMSActivity owner;
+	public WebSMSActivity owner;
 	
 	 @Override
 	 protected void onPreExecute() {

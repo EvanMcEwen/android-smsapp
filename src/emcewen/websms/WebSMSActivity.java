@@ -2,6 +2,9 @@ package emcewen.websms;
 
 import org.json.JSONException;
 
+import emcewen.websms.services.C2DMRegistrationService;
+import emcewen.websms.tasks.LoginTask;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;

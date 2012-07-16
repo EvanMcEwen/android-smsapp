@@ -1,4 +1,4 @@
-package emcewen.websms;
+package emcewen.websms.tasks;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import emcewen.websms.services.SMSService;
 
 import android.app.PendingIntent;
 import android.content.ContentValues;

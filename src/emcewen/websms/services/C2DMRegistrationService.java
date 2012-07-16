@@ -1,4 +1,4 @@
-package emcewen.websms;
+package emcewen.websms.services;
 
 /*
  * Copyright (C) 2011, Marakana Inc.
@@ -32,6 +32,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import emcewen.websms.WebSMSActivity;
 
 import android.app.IntentService;
 import android.app.PendingIntent;

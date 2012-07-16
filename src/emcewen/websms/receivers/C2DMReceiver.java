@@ -1,5 +1,8 @@
-package emcewen.websms;
+package emcewen.websms.receivers;
 
+import emcewen.websms.WebSMSActivity;
+import emcewen.websms.services.C2DMRegistrationService;
+import emcewen.websms.services.SMSService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

@@ -1,5 +1,7 @@
-package emcewen.websms;
+package emcewen.websms.services;
 
+import emcewen.websms.tasks.NewSMSSendTask;
+import emcewen.websms.tasks.NewSMSTask;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;

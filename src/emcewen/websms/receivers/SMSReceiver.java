@@ -1,5 +1,6 @@
-package emcewen.websms;
+package emcewen.websms.receivers;
 
+import emcewen.websms.services.SMSService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,8 @@ public class SMSReceiver extends BroadcastReceiver {
     	Bundle bundle = intent.getExtras();
     	SharedPreferences settings = context.getSharedPreferences("WebSMSActivity", 0);
 
+    	if (settings.getBoolean("logged_in", false))
+    	{
     	if (bundle != null) {
     	        Object[] pdusObj = (Object[]) bundle.get("pdus");
     	        SmsMessage[] messages = new SmsMessage[pdusObj.length];
@@ -34,6 +37,7 @@ public class SMSReceiver extends BroadcastReceiver {
     	            serviceIntent.putExtra(SMSService.USERNAME, settings.getString("username", "empty"));
     	            context.startService(serviceIntent);
     	        }
+    	}
     	}
     }
 }
