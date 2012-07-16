@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -39,11 +40,13 @@ public class SyncTask extends AsyncTask<String,Void,String>
    		HttpClient httpclient = new DefaultHttpClient();
            HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/synchash");
            JSONObject json = new JSONObject();
+           SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
 
            try {
                // Add your data
            	json.put("in_hash", getLatestHashInbox());
            	json.put("out_hash", getLatestHashOutbox());
+           	json.put("username", settings.getString("username", "empty"));
            	StringEntity se = new StringEntity(json.toString());
            	se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
                httppost.setEntity(se);

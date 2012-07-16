@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 public class C2DMReceiver extends BroadcastReceiver {
     private static final String TAG = C2DMReceiver.class.getSimpleName();
