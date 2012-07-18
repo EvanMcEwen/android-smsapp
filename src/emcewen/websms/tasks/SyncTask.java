@@ -41,6 +41,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
            HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/synchash");
            JSONObject json = new JSONObject();
            SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
+           this.grabSMS();
 
            try {
                // Add your data
@@ -74,19 +75,96 @@ public class SyncTask extends AsyncTask<String,Void,String>
    		{
    			JSONObject j = new JSONObject(result);
 	        Log.d(LoginTask.class.getSimpleName(), Integer.toString(j.getInt("status")));
-	        if (j.getInt("status") == 1)
+	        if (j.getInt("sync_status") == 1)
 	        {
-	        	Log.d(TAG,"Success in SMS Sync");
+	        	boolean inStatus = j.getBoolean("new_in_status");
+	        	boolean outStatus = j.getBoolean("new_out_status");
+	        	String inHash = j.getString("in_hash");
+	        	String outHash = j.getString("out_hash");
+	        	
+	        	//Let's go through message by message and stop when we've hit the old hash
+	        	//Build a JSON object to send
+	        	JSONObject inMessages = new JSONObject();
+	        	if (inStatus)
+	        	{
+	        		for (int i = 0; i < inBody.length; i++)
+	        		{
+	        			if (md5(inBody[i]).equals(inHash))
+	        				i = inBody.length;
+	        			else
+	        			{
+	        				JSONObject tempMsg = new JSONObject();
+	        				tempMsg.put("message", inBody[i]);
+	        				tempMsg.put("number", inNumber[i]);
+	        				tempMsg.put("timestamp", inDate[i]);
+	        				inMessages.put("sms" + i, tempMsg);
+	        			}
+	        		}
+	        	}
+	        	
+        		JSONObject outMessages = new JSONObject();
+	        	if (outStatus)
+	        	{
+	        		for (int i = 0; i < outBody.length; i++)
+	        		{
+	        			if (md5(outBody[i]).equals(outHash))
+	        				i = outBody.length;
+	        			else
+	        			{
+	        				JSONObject tempMsg = new JSONObject();
+	        				tempMsg.put("message", outBody[i]);
+	        				tempMsg.put("number", outNumber[i]);
+	        				tempMsg.put("timestamp", outDate[i]);
+	        				outMessages.put("sms" + i, tempMsg);
+	        			}
+	        		}
+	        	}
+	        	
+	        	//Post to server
+	       		HttpClient httpclient = new DefaultHttpClient();
+	            HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/messages");
+	            JSONObject json = new JSONObject();
+	            SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
+	            this.grabSMS();
+
+	                // Add your data
+	            	if (inStatus)
+	            	{
+	            		json.put("total_in_messages", inBody.length);
+	            		json.put("in_messages", inMessages);
+	            	}
+	            	if (outStatus)
+	            	{
+	            		json.put("total_out_messages", outBody.length);
+	            		json.put("out_messages", outMessages);
+	            	}
+	            	json.put("username", settings.getString("username", "empty"));
+	            	StringEntity se = new StringEntity(json.toString());
+	            	se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+	                httppost.setEntity(se);
+
+	                // Execute HTTP Post Request
+	                ResponseHandler<String> responseHandler = new BasicResponseHandler();
+	                String response = httpclient.execute(httppost, responseHandler);
+	                
+	                if(response!=null){
+	                	//Good
+	                }
 	        }
 	        else
 	        {
-	        	Log.d(TAG,"Error has occured");
+	        	Log.d(TAG,"No new messages to sync!");
 	        }
 		} 
    		catch (JSONException e) 
 		{
 			e.printStackTrace();
 		}
+   		catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+        }
    	}
    	
    	private void grabSMS()
