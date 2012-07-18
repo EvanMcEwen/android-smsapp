@@ -33,12 +33,14 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	private String[] outBody;
 	private String[] outNumber;
 	private String[] outDate;
+	private int totalNewIn = 0;
+	private int totalNewOut = 0;
 	
 	public Activity owner;
    	@Override
    	protected String doInBackground(String... params) {
    		HttpClient httpclient = new DefaultHttpClient();
-           HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/synchash");
+           HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/synchashes");
            JSONObject json = new JSONObject();
            SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
            this.grabSMS();
@@ -74,7 +76,6 @@ public class SyncTask extends AsyncTask<String,Void,String>
    		try 
    		{
    			JSONObject j = new JSONObject(result);
-	        Log.d(LoginTask.class.getSimpleName(), Integer.toString(j.getInt("status")));
 	        if (j.getInt("sync_status") == 1)
 	        {
 	        	boolean inStatus = j.getBoolean("new_in_status");
@@ -90,7 +91,10 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        		for (int i = 0; i < inBody.length; i++)
 	        		{
 	        			if (md5(inBody[i]).equals(inHash))
+	        			{
+	        				totalNewIn = i - 1;
 	        				i = inBody.length;
+	        			}
 	        			else
 	        			{
 	        				JSONObject tempMsg = new JSONObject();
@@ -98,6 +102,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        				tempMsg.put("number", inNumber[i]);
 	        				tempMsg.put("timestamp", inDate[i]);
 	        				inMessages.put("sms" + i, tempMsg);
+	        				totalNewIn = i;
 	        			}
 	        		}
 	        	}
@@ -108,7 +113,10 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        		for (int i = 0; i < outBody.length; i++)
 	        		{
 	        			if (md5(outBody[i]).equals(outHash))
+	        			{
+	        				totalNewOut = i - 1;
 	        				i = outBody.length;
+	        			}
 	        			else
 	        			{
 	        				JSONObject tempMsg = new JSONObject();
@@ -116,40 +124,20 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        				tempMsg.put("number", outNumber[i]);
 	        				tempMsg.put("timestamp", outDate[i]);
 	        				outMessages.put("sms" + i, tempMsg);
+	        				totalNewOut = i;
 	        			}
 	        		}
 	        	}
 	        	
-	        	//Post to server
-	       		HttpClient httpclient = new DefaultHttpClient();
-	            HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/messages");
-	            JSONObject json = new JSONObject();
-	            SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
-	            this.grabSMS();
-
-	                // Add your data
-	            	if (inStatus)
-	            	{
-	            		json.put("total_in_messages", inBody.length);
-	            		json.put("in_messages", inMessages);
-	            	}
-	            	if (outStatus)
-	            	{
-	            		json.put("total_out_messages", outBody.length);
-	            		json.put("out_messages", outMessages);
-	            	}
-	            	json.put("username", settings.getString("username", "empty"));
-	            	StringEntity se = new StringEntity(json.toString());
-	            	se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-	                httppost.setEntity(se);
-
-	                // Execute HTTP Post Request
-	                ResponseHandler<String> responseHandler = new BasicResponseHandler();
-	                String response = httpclient.execute(httppost, responseHandler);
-	                
-	                if(response!=null){
-	                	//Good
-	                }
+	        	SyncPostTask syncPostTask = new SyncPostTask();
+	        	syncPostTask.owner = this.owner;
+	        	syncPostTask.inHash = md5(inBody[0]);
+	        	syncPostTask.outHash = md5(outBody[0]);
+	        	syncPostTask.inStatus = inStatus;
+	        	syncPostTask.outStatus = outStatus;
+	        	syncPostTask.totalNewIn = totalNewIn;
+	        	syncPostTask.totalNewOut = totalNewOut;
+	        	syncPostTask.execute(inMessages,outMessages);
 	        }
 	        else
 	        {
@@ -160,11 +148,6 @@ public class SyncTask extends AsyncTask<String,Void,String>
 		{
 			e.printStackTrace();
 		}
-   		catch (ClientProtocolException e) {
-            // TODO Auto-generated catch block
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-        }
    	}
    	
    	private void grabSMS()
@@ -195,7 +178,6 @@ public class SyncTask extends AsyncTask<String,Void,String>
     		inNumber = null;
     		inDate = null;
     	}
-    	c.close();
     	
     	//Outbox
     	uri = Uri.parse("content://sms/sent");
@@ -210,9 +192,9 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	
 	    	if(c.moveToFirst()){
 	    	        for(int i=0;i<c.getCount();i++){
-	    	                inBody[i]= c.getString(c.getColumnIndexOrThrow("body")).toString();
-	    	                inNumber[i]=c.getString(c.getColumnIndexOrThrow("address")).toString();
-	    	                inDate[i]=c.getString(c.getColumnIndexOrThrow("date")).toString();
+	    	                outBody[i]= c.getString(c.getColumnIndexOrThrow("body")).toString();
+	    	                outNumber[i]=c.getString(c.getColumnIndexOrThrow("address")).toString();
+	    	                outDate[i]=c.getString(c.getColumnIndexOrThrow("date")).toString();
 	    	                c.moveToNext();
 	    	        }
 	    	}
@@ -223,7 +205,6 @@ public class SyncTask extends AsyncTask<String,Void,String>
     		outNumber = null;
     		outDate = null;
     	}
-    	c.close();
    	}
    	
    	private String getLatestHashInbox()
@@ -240,23 +221,27 @@ public class SyncTask extends AsyncTask<String,Void,String>
    		return "empty";
    	}
 
-   	public static String md5(String string) {
-   	    byte[] hash;
-
+   	private String md5(String s) {
    	    try {
-   	        hash = MessageDigest.getInstance("MD5").digest(string.getBytes("UTF-8"));
+   	        // Create MD5 Hash
+   	        MessageDigest digest = java.security.MessageDigest
+   	                .getInstance("MD5");
+   	        digest.update(s.getBytes());
+   	        byte messageDigest[] = digest.digest();
+   	 
+   	        // Create Hex String
+   	        StringBuffer hexString = new StringBuffer();
+   	        for (int i = 0; i < messageDigest.length; i++) {
+   	            String h = Integer.toHexString(0xFF & messageDigest[i]);
+   	            while (h.length() < 2)
+   	                h = "0" + h;
+   	            hexString.append(h);
+   	        }
+   	        return hexString.toString();
+   	 
    	    } catch (NoSuchAlgorithmException e) {
-   	        throw new RuntimeException("Huh, MD5 should be supported?", e);
-   	    } catch (UnsupportedEncodingException e) {
-   	        throw new RuntimeException("Huh, UTF-8 should be supported?", e);
+   	        e.printStackTrace();
    	    }
-
-   	    StringBuilder hex = new StringBuilder(hash.length * 2);
-   	    for (byte b : hash) {
-   	        if ((b & 0xFF) < 0x10) hex.append("0");
-   	        hex.append(Integer.toHexString(b & 0xFF));
-   	    }
-   	    return hex.toString();
+   	    return "";
    	}
-   	
 }

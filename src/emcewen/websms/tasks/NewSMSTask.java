@@ -58,7 +58,7 @@ public class NewSMSTask extends AsyncTask<String,Void,String>
    		try 
    		{
    			JSONObject j = new JSONObject(result);
-	        Log.d(LoginTask.class.getSimpleName(), Integer.toString(j.getInt("status")));
+	        Log.d(NewSMSTask.class.getSimpleName(), Integer.toString(j.getInt("status")));
 	        if (j.getInt("status") == 1)
 	        {
 	        	Log.d(TAG,"Success in SMS Sync");

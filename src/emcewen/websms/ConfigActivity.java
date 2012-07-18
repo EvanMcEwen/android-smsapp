@@ -1,8 +1,8 @@
 package emcewen.websms;
 
+import emcewen.websms.tasks.SyncTask;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 public class ConfigActivity extends Activity {
@@ -21,6 +21,9 @@ public class ConfigActivity extends Activity {
     
     public void performSync(View view)
     {
+		SyncTask syncTask = new SyncTask();
+		syncTask.owner = this;
+		syncTask.execute();
     }
 
     @Override
