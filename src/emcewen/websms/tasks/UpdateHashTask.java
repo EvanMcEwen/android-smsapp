@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class UpdateHashTask extends AsyncTask<String,Void,String> 
 {	
@@ -69,6 +70,8 @@ public class UpdateHashTask extends AsyncTask<String,Void,String>
 	        if (j.getInt("status") == 1)
 	        {
 	        	Log.d(TAG,"Success in Hash Update");
+	    		Toast toast = Toast.makeText(owner, "SMS Sync Successful", Toast.LENGTH_SHORT);
+	    		toast.show();
 	        }
 	        else
 	        {
