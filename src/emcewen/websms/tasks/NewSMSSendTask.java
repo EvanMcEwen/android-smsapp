@@ -1,6 +1,8 @@
 package emcewen.websms.tasks;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import org.apache.http.client.ClientProtocolException;
@@ -74,10 +76,41 @@ public class NewSMSSendTask extends AsyncTask<String,Void,String>
         	values.put("body", j.getString("message"));
         	owner.getBaseContext().getContentResolver().insert(Uri.parse("content://sms/sent"), values);
         	
+        	UpdateHashTask updateHashTask = new UpdateHashTask();
+        	updateHashTask.owner = this.owner;
+        	updateHashTask.inStatus = false;
+        	updateHashTask.outStatus = true;
+        	updateHashTask.execute("",md5(j.getString("message")));
+        	
 		} 
    		catch (JSONException e) 
 		{
 			e.printStackTrace();
 		}
    	}
+   	
+   	private String md5(String s) {
+   	    try {
+   	        // Create MD5 Hash
+   	        MessageDigest digest = java.security.MessageDigest
+   	                .getInstance("MD5");
+   	        digest.update(s.getBytes());
+   	        byte messageDigest[] = digest.digest();
+   	 
+   	        // Create Hex String
+   	        StringBuffer hexString = new StringBuffer();
+   	        for (int i = 0; i < messageDigest.length; i++) {
+   	            String h = Integer.toHexString(0xFF & messageDigest[i]);
+   	            while (h.length() < 2)
+   	                h = "0" + h;
+   	            hexString.append(h);
+   	        }
+   	        return hexString.toString();
+   	 
+   	    } catch (NoSuchAlgorithmException e) {
+   	        e.printStackTrace();
+   	    }
+   	    return "";
+   	}
+   	
 }

@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -24,11 +25,11 @@ public class UpdateHashTask extends AsyncTask<String,Void,String>
 	private static final String TAG = UpdateHashTask.class.getSimpleName();
 	public boolean inStatus;
 	public boolean outStatus;
-	public Activity owner;
+	public Context owner;
    	@Override
    	protected String doInBackground(String... params) {
    		HttpClient httpclient = new DefaultHttpClient();
-   		SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
+   		SharedPreferences settings = owner.getSharedPreferences("WebSMSActivity", 0);
            HttpPut httpput = new HttpPut("http://sms.evanmcewen.ca/synchashes/1");
            JSONObject json = new JSONObject();
 

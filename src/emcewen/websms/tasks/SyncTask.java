@@ -92,7 +92,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        		{
 	        			if (md5(inBody[i]).equals(inHash))
 	        			{
-	        				totalNewIn = i - 1;
+	        				totalNewIn = i;
 	        				i = inBody.length;
 	        			}
 	        			else
@@ -105,6 +105,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        				totalNewIn = i;
 	        			}
 	        		}
+	        		Log.d("inMessage Count", Integer.toString(totalNewIn));
 	        	}
 	        	
         		JSONObject outMessages = new JSONObject();
@@ -114,7 +115,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        		{
 	        			if (md5(outBody[i]).equals(outHash))
 	        			{
-	        				totalNewOut = i - 1;
+	        				totalNewOut = i;
 	        				i = outBody.length;
 	        			}
 	        			else

@@ -46,6 +46,7 @@ public class SMSService extends IntentService {
     {
     	Log.d(TAG,"Starting SMS Sync Task");
 		NewSMSTask smsTask = new NewSMSTask();
+		smsTask.owner = this;
 		smsTask.execute(bundle.getString(ORIGIN),bundle.getString(MESSAGE),bundle.getString(TIMESTAMP),bundle.getString(USERNAME));
     }
 

@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -22,7 +23,7 @@ import android.util.Log;
 public class SyncPostTask extends AsyncTask<JSONObject,Void,String> 
 {	
 	private static final String TAG = SyncPostTask.class.getSimpleName();
-	public Activity owner;
+	public Context owner;
 	public boolean inStatus;
 	public boolean outStatus;
 	public String inHash;
@@ -34,7 +35,7 @@ public class SyncPostTask extends AsyncTask<JSONObject,Void,String>
    		HttpClient httpclient = new DefaultHttpClient();
            HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/messages");
            JSONObject json = new JSONObject();
-           SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
+           SharedPreferences settings = owner.getSharedPreferences("WebSMSActivity", 0);
 
            try {
                // Add your data
