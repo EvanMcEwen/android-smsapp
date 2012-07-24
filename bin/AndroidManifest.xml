@@ -74,5 +74,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ConfigActivity" android:label="@string/config_app_name"></activity>
+        <receiver android:name=".receivers.AlarmReceiver"></receiver>
     </application>
 </manifest>

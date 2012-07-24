@@ -1,5 +1,6 @@
 package emcewen.websms;
 
+import emcewen.websms.receivers.AlarmReceiver;
 import emcewen.websms.tasks.SyncTask;
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ public class ConfigActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.config);
+	    AlarmReceiver myAlarm = new AlarmReceiver(this,900000);
 	}
 	
     @Override

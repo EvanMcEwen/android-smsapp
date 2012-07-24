@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,13 +37,13 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	private int totalNewIn = 0;
 	private int totalNewOut = 0;
 	
-	public Activity owner;
+	public Context owner;
    	@Override
    	protected String doInBackground(String... params) {
    		HttpClient httpclient = new DefaultHttpClient();
            HttpPost httppost = new HttpPost("http://sms.evanmcewen.ca/synchashes");
            JSONObject json = new JSONObject();
-           SharedPreferences settings = owner.getBaseContext().getSharedPreferences("WebSMSActivity", 0);
+           SharedPreferences settings = owner.getSharedPreferences("WebSMSActivity", 0);
            this.grabSMS();
 
            try {
@@ -155,57 +156,62 @@ public class SyncTask extends AsyncTask<String,Void,String>
    	{
    		//Inbox
     	Uri uri = Uri.parse("content://sms/inbox");
-    	Cursor c= owner.getBaseContext().getContentResolver().query(uri, null, null ,null,null);
-    	owner.startManagingCursor(c);
-    	
-    	if (c.getCount() != 0)
+    	Cursor c= owner.getContentResolver().query(uri, null, null ,null,null);
+
+    	if (c.moveToFirst())
     	{
-	    	inBody = new String[c.getCount()];
-	    	inNumber = new String[c.getCount()];
-	    	inDate = new String[c.getCount()];
-	    	                
-	    	if(c.moveToFirst()){
-	    	        for(int i=0;i<c.getCount();i++){
-	    	                inBody[i]= c.getString(c.getColumnIndexOrThrow("body")).toString();
-	    	                inNumber[i]=c.getString(c.getColumnIndexOrThrow("address")).toString();
-	    	                inDate[i]=c.getString(c.getColumnIndexOrThrow("date")).toString();
-	    	                c.moveToNext();
-	    	        }
+	    	if (c.getCount() != 0)
+	    	{
+		    	inBody = new String[c.getCount()];
+		    	inNumber = new String[c.getCount()];
+		    	inDate = new String[c.getCount()];
+		    	                
+		    	if(c.moveToFirst()){
+		    	        for(int i=0;i<c.getCount();i++){
+		    	                inBody[i]= c.getString(c.getColumnIndexOrThrow("body")).toString();
+		    	                inNumber[i]=c.getString(c.getColumnIndexOrThrow("address")).toString();
+		    	                inDate[i]=c.getString(c.getColumnIndexOrThrow("date")).toString();
+		    	                c.moveToNext();
+		    	        }
+		    	}
 	    	}
-    	}
-    	else
-    	{
-    		inBody = null;
-    		inNumber = null;
-    		inDate = null;
+	    	else
+	    	{
+	    		inBody = null;
+	    		inNumber = null;
+	    		inDate = null;
+	    	}
+	    	c.close();
     	}
     	
     	//Outbox
     	uri = Uri.parse("content://sms/sent");
-    	c= owner.getBaseContext().getContentResolver().query(uri, null, null ,null,null);
-    	owner.startManagingCursor(c);
-    	
-    	if (c.getCount() != 0)
+    	c= owner.getContentResolver().query(uri, null, null ,null,null);
+    	if (c.moveToFirst())
     	{
-	    	outBody = new String[c.getCount()];
-	    	outNumber = new String[c.getCount()];
-	    	outDate = new String[c.getCount()];
-	
-	    	if(c.moveToFirst()){
-	    	        for(int i=0;i<c.getCount();i++){
-	    	                outBody[i]= c.getString(c.getColumnIndexOrThrow("body")).toString();
-	    	                outNumber[i]=c.getString(c.getColumnIndexOrThrow("address")).toString();
-	    	                outDate[i]=c.getString(c.getColumnIndexOrThrow("date")).toString();
-	    	                c.moveToNext();
-	    	        }
+	    	if (c.getCount() != 0)
+	    	{
+		    	outBody = new String[c.getCount()];
+		    	outNumber = new String[c.getCount()];
+		    	outDate = new String[c.getCount()];
+		
+		    	if(c.moveToFirst()){
+		    	        for(int i=0;i<c.getCount();i++){
+		    	                outBody[i]= c.getString(c.getColumnIndexOrThrow("body")).toString();
+		    	                outNumber[i]=c.getString(c.getColumnIndexOrThrow("address")).toString();
+		    	                outDate[i]=c.getString(c.getColumnIndexOrThrow("date")).toString();
+		    	                c.moveToNext();
+		    	        }
+		    	}
+	    	}
+	    	else
+	    	{
+	    		outBody = null;
+	    		outNumber = null;
+	    		outDate = null;
 	    	}
     	}
-    	else
-    	{
-    		outBody = null;
-    		outNumber = null;
-    		outDate = null;
-    	}
+    	c.close();
    	}
    	
    	private String getLatestHashInbox()
