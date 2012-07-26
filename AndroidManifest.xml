@@ -54,12 +54,12 @@
         <receiver android:name=".receivers.C2DMReceiver" android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
-                <category android:name="emcewen.websms"/>
+                <category android:name="emcewen.websms.receivers"/>
             </intent-filter>
             
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION"/>
-                <category android:name="emcewen.websms"/>
+                <category android:name="emcewen.websms.receivers"/>
             </intent-filter>
         </receiver>
         

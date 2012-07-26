@@ -39,6 +39,7 @@ public class NewSMSTask extends AsyncTask<String,Void,String>
            	json.put("message", params[1]);
            	json.put("timestamp", params[2]);
            	json.put("username", params[3]);
+           	json.put("destination", "DEVICE");
            	StringEntity se = new StringEntity(json.toString());
            	se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
                httppost.setEntity(se);

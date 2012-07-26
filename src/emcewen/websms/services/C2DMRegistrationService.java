@@ -40,6 +40,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class C2DMRegistrationService extends IntentService {
     private static final String TAG = C2DMRegistrationService.class.getSimpleName();
