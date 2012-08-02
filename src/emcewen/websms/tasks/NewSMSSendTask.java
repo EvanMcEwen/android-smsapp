@@ -31,7 +31,7 @@ public class NewSMSSendTask extends AsyncTask<String,Void,String>
    	@Override
    	protected String doInBackground(String... params) {
    		HttpClient httpclient = new DefaultHttpClient();
-           HttpGet httpget = new HttpGet("http://sms.evanmcewen.ca/outmessages/" + params[0]);
+           HttpGet httpget = new HttpGet("http://sms.evanmcewen.ca/outmessages/" + params[0] + ".json");
 
            try {
 	           // Execute HTTP Post Request
