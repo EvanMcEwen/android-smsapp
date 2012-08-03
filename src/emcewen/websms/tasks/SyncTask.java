@@ -87,7 +87,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        	//Let's go through message by message and stop when we've hit the old hash
 	        	//Build a JSON object to send
 	        	JSONObject inMessages = new JSONObject();
-	        	if (inStatus)
+	        	if (inStatus && inBody != null)
 	        	{
 	        		for (int i = 0; i < inBody.length; i++)
 	        		{
@@ -110,7 +110,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        	}
 	        	
         		JSONObject outMessages = new JSONObject();
-	        	if (outStatus)
+	        	if (outStatus && outBody != null)
 	        	{
 	        		for (int i = 0; i < outBody.length; i++)
 	        		{
@@ -133,10 +133,23 @@ public class SyncTask extends AsyncTask<String,Void,String>
 	        	
 	        	SyncPostTask syncPostTask = new SyncPostTask();
 	        	syncPostTask.owner = this.owner;
-	        	syncPostTask.inHash = md5(inBody[0]);
-	        	syncPostTask.outHash = md5(outBody[0]);
+	        	if (inBody != null)
+	        		syncPostTask.inHash = md5(inBody[0]);
+	        	else
+	        		syncPostTask.inHash = "empty";
+	        	if (outBody != null)
+	        		syncPostTask.outHash = md5(outBody[0]);
+	        	else
+	        		syncPostTask.outHash = "empty";
 	        	syncPostTask.inStatus = inStatus;
 	        	syncPostTask.outStatus = outStatus;
+	        	
+	        	if (totalNewIn == 0)
+	        		totalNewIn++;
+	        	
+	        	if (totalNewOut == 0)
+	        		totalNewOut++;
+	        	
 	        	syncPostTask.totalNewIn = totalNewIn;
 	        	syncPostTask.totalNewOut = totalNewOut;
 	        	syncPostTask.execute(inMessages,outMessages);

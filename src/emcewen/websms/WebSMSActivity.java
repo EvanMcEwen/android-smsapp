@@ -29,7 +29,7 @@ public class WebSMSActivity extends Activity {
             // TODO Auto-generated method stub
         	Log.d(TAG,intent.getAction());
         	
-        	if (intent.getAction() == PUSH_READY)
+        	if (intent.getAction().equals(PUSH_READY))
         	{
 	        	//Get the C2DM RegistrationID
 	        	String registrationID = intent.getStringExtra(C2DMRegistrationService.REGISTRATION_ID);
@@ -40,10 +40,12 @@ public class WebSMSActivity extends Activity {
 	            Intent serviceIntent = new Intent(C2DMRegistrationService.REGISTER_WITH_MYSERVER);
 	            serviceIntent.putExtra(C2DMRegistrationService.REGISTRATION_ID, registrationID);
 	            serviceIntent.putExtra(C2DMRegistrationService.PUSH_USERNAME, username);
+	            Log.d(TAG,registrationID);
+	            Log.d(TAG,username);
 	            context.startService(serviceIntent);
         	}
         	
-        	if (intent.getAction() == PUSH_SUCCESS)
+        	if (intent.getAction().equals(PUSH_SUCCESS))
         	{
         		//Mark us as logged in
                 SharedPreferences settings = getPreferences(0);

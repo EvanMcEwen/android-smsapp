@@ -14,11 +14,14 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import emcewen.websms.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Button;
 
 public class SyncPostTask extends AsyncTask<JSONObject,Void,String> 
 {	
