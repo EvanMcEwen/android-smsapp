@@ -8,17 +8,21 @@ import android.view.View;
 
 public class ConfigActivity extends Activity {
 	private static final String TAG = ConfigActivity.class.getSimpleName();
+	private AlarmReceiver myAlarm = null;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.config);
-	    AlarmReceiver myAlarm = new AlarmReceiver(this,900000);
+	    if (myAlarm == null)
+	    	myAlarm = new AlarmReceiver(this,900000);
 	}
 	
     @Override
     protected void onResume() {
         super.onResume();
+	    if (myAlarm == null)
+	    	myAlarm = new AlarmReceiver(this,900000);
     }
     
     public void performSync(View view)

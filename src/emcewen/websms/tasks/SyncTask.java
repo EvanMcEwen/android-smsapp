@@ -74,95 +74,100 @@ public class SyncTask extends AsyncTask<String,Void,String>
    	}
    	protected void onPostExecute(String result)
    	{
-   		try 
+   		if (result!=null)
    		{
-   			JSONObject j = new JSONObject(result);
-	        if (j.getInt("sync_status") == 1)
-	        {
-	        	boolean inStatus = j.getBoolean("new_in_status");
-	        	boolean outStatus = j.getBoolean("new_out_status");
-	        	String inHash = j.getString("in_hash");
-	        	String outHash = j.getString("out_hash");
-	        	
-	        	//Let's go through message by message and stop when we've hit the old hash
-	        	//Build a JSON object to send
-	        	JSONObject inMessages = new JSONObject();
-	        	if (inStatus && inBody != null)
-	        	{
-	        		for (int i = 0; i < inBody.length; i++)
-	        		{
-	        			if (md5(inBody[i]).equals(inHash))
-	        			{
-	        				totalNewIn = i;
-	        				i = inBody.length;
-	        			}
-	        			else
-	        			{
-	        				JSONObject tempMsg = new JSONObject();
-	        				tempMsg.put("message", inBody[i]);
-	        				tempMsg.put("number", inNumber[i]);
-	        				tempMsg.put("timestamp", inDate[i]);
-	        				inMessages.put("sms" + i, tempMsg);
-	        				totalNewIn = i;
-	        			}
-	        		}
-	        		Log.d("inMessage Count", Integer.toString(totalNewIn));
-	        	}
-	        	
-        		JSONObject outMessages = new JSONObject();
-	        	if (outStatus && outBody != null)
-	        	{
-	        		for (int i = 0; i < outBody.length; i++)
-	        		{
-	        			if (md5(outBody[i]).equals(outHash))
-	        			{
-	        				totalNewOut = i;
-	        				i = outBody.length;
-	        			}
-	        			else
-	        			{
-	        				JSONObject tempMsg = new JSONObject();
-	        				tempMsg.put("message", outBody[i]);
-	        				tempMsg.put("number", outNumber[i]);
-	        				tempMsg.put("timestamp", outDate[i]);
-	        				outMessages.put("sms" + i, tempMsg);
-	        				totalNewOut = i;
-	        			}
-	        		}
-	        	}
-	        	
-	        	SyncPostTask syncPostTask = new SyncPostTask();
-	        	syncPostTask.owner = this.owner;
-	        	if (inBody != null)
-	        		syncPostTask.inHash = md5(inBody[0]);
-	        	else
+	   		try 
+	   		{
+	   			JSONObject j = new JSONObject(result);
+		        if (j.getInt("sync_status") == 1)
+		        {
+		        	boolean inStatus = j.getBoolean("new_in_status");
+		        	boolean outStatus = j.getBoolean("new_out_status");
+		        	String inHash = j.getString("in_hash");
+		        	String outHash = j.getString("out_hash");
+		        	
+		        	//Let's go through message by message and stop when we've hit the old hash
+		        	//Build a JSON object to send
+		        	JSONObject inMessages = new JSONObject();
+		        	if (inStatus && inBody != null)
+		        	{
+		        		for (int i = 0; i < inBody.length; i++)
+		        		{
+		        			if (md5(inBody[i]).equals(inHash))
+		        			{
+		        				totalNewIn = i;
+		        				i = inBody.length;
+		        			}
+		        			else
+		        			{
+		        				JSONObject tempMsg = new JSONObject();
+		        				tempMsg.put("message", inBody[i]);
+		        				tempMsg.put("number", inNumber[i]);
+		        				tempMsg.put("timestamp", inDate[i]);
+		        				inMessages.put("sms" + i, tempMsg);
+		        				totalNewIn = i;
+		        			}
+		        		}
+		        		Log.d("inMessage Count", Integer.toString(totalNewIn));
+		        	}
+		        	
+	        		JSONObject outMessages = new JSONObject();
+		        	if (outStatus && outBody != null)
+		        	{
+		        		for (int i = 0; i < outBody.length; i++)
+		        		{
+		        			if (md5(outBody[i]).equals(outHash))
+		        			{
+		        				totalNewOut = i;
+		        				i = outBody.length;
+		        			}
+		        			else
+		        			{
+		        				JSONObject tempMsg = new JSONObject();
+		        				tempMsg.put("message", outBody[i]);
+		        				tempMsg.put("number", outNumber[i]);
+		        				tempMsg.put("timestamp", outDate[i]);
+		        				outMessages.put("sms" + i, tempMsg);
+		        				totalNewOut = i;
+		        			}
+		        		}
+		        	}
+		        	
+		        	SyncPostTask syncPostTask = new SyncPostTask();
+		        	syncPostTask.owner = this.owner;
 	        		syncPostTask.inHash = "empty";
-	        	if (outBody != null)
-	        		syncPostTask.outHash = md5(outBody[0]);
-	        	else
 	        		syncPostTask.outHash = "empty";
-	        	syncPostTask.inStatus = inStatus;
-	        	syncPostTask.outStatus = outStatus;
-	        	
-	        	if (totalNewIn == 0)
-	        		totalNewIn++;
-	        	
-	        	if (totalNewOut == 0)
-	        		totalNewOut++;
-	        	
-	        	syncPostTask.totalNewIn = totalNewIn;
-	        	syncPostTask.totalNewOut = totalNewOut;
-	        	syncPostTask.execute(inMessages,outMessages);
-	        }
-	        else
-	        {
-	        	Log.d(TAG,"No new messages to sync!");
-	        }
-		} 
-   		catch (JSONException e) 
-		{
-			e.printStackTrace();
-		}
+		        	if (inBody != null)
+		        		syncPostTask.inHash = md5(inBody[0]);
+		        	if (outBody != null)
+		        		syncPostTask.outHash = md5(outBody[0]);
+		        	syncPostTask.inStatus = inStatus;
+		        	syncPostTask.outStatus = outStatus;
+		        	
+		        	if (totalNewIn == 0)
+		        		totalNewIn++;
+		        	
+		        	if (totalNewOut == 0)
+		        		totalNewOut++;
+		        	
+		        	syncPostTask.totalNewIn = totalNewIn;
+		        	syncPostTask.totalNewOut = totalNewOut;
+		        	syncPostTask.execute(inMessages,outMessages);
+		        }
+		        else
+		        {
+		        	Log.d(TAG,"No new messages to sync!");
+		        }
+			} 
+	   		catch (JSONException e) 
+			{
+				e.printStackTrace();
+			}
+   		}
+   		else
+   		{
+   			Log.d(TAG,"No Internet Connection");
+   		}
    	}
    	
    	private void grabSMS()
@@ -188,13 +193,13 @@ public class SyncTask extends AsyncTask<String,Void,String>
 		    	        }
 		    	}
 	    	}
-	    	else
-	    	{
-	    		inBody = null;
-	    		inNumber = null;
-	    		inDate = null;
-	    	}
 	    	c.close();
+    	}
+    	else
+    	{
+    		inBody = null;
+    		inNumber = null;
+    		inDate = null;
     	}
     	
     	//Outbox
@@ -217,12 +222,12 @@ public class SyncTask extends AsyncTask<String,Void,String>
 		    	        }
 		    	}
 	    	}
-	    	else
-	    	{
-	    		outBody = null;
-	    		outNumber = null;
-	    		outDate = null;
-	    	}
+    	}
+    	else
+    	{
+    		outBody = null;
+    		outNumber = null;
+    		outDate = null;
     	}
     	c.close();
    	}
