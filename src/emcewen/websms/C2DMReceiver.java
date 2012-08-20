@@ -33,6 +33,7 @@ public class C2DMReceiver extends BroadcastReceiver {
         	//Some sort of error has occured with registering with the C2DM servers
             Log.w(TAG, "Registration failed: " + error);
         } else if (unregistered != null) {
+        	//Needs implementation
         	//We have been unregistered from the C2DM servers
         	//So we should handle this on our servers accordingly
                 Log.d(TAG, "Unregistered: " + unregistered);
@@ -41,7 +42,7 @@ public class C2DMReceiver extends BroadcastReceiver {
         	//We have a successful C2DM registration yay!
                 Log.d(TAG, "Registered with registration ID [" + registrationId + "]");
                 
-            //Try to use a broadcast so that we can handle the WebApp registration in the main activity
+            //Tell the main Activity that it can register with the web application
                 Intent broadcast = new Intent(WebSMSActivity.PUSH_READY);
                 broadcast.putExtra(C2DMRegistrationService.REGISTRATION_ID,registrationId);
                 context.sendBroadcast(broadcast);
@@ -55,6 +56,7 @@ public class C2DMReceiver extends BroadcastReceiver {
         Log.d(TAG, "Handling C2DM notification");
         
         Bundle extras = intent.getExtras();
+        //We've received a push notification telling us theres an SMS ready to send
         if (extras.getString(C2DM_DATA_ACTION).equals("NEW_SMS_TO_SEND"))
         {
         	Intent serviceIntent = new Intent(SMSService.NEW_SMS_TO_SEND);

@@ -28,6 +28,7 @@ public class LoginTask extends AsyncTask<String,Void,String>
 	
 	 @Override
 	 protected void onPreExecute() {
+		 //Start a dialog box that tells the user we are working
 	     this.dialog = ProgressDialog.show(owner, "Validating Credentials", "Please Wait...", true);
 	 }
 
@@ -65,6 +66,7 @@ public class LoginTask extends AsyncTask<String,Void,String>
    	}
    	protected void onPostExecute(String result) 
    	{
+   		//Get rid of the dialog box
     	this.dialog.cancel();
    		try 
    		{

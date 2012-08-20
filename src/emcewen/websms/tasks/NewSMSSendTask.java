@@ -56,6 +56,7 @@ public class NewSMSSendTask extends AsyncTask<String,Void,String>
 	        Log.d(TAG, j.getString("message"));
         	Log.d(TAG,"Success in SMS Sync");
 
+        	//Code to send SMS
         	SmsManager smsMgr = SmsManager.getDefault();
         	ArrayList<String> messages = smsMgr.divideMessage(j.getString("message"));
         	final String SMS_ADDRESS_PARAM="SMS_ADDRESS_PARAM";
@@ -76,6 +77,7 @@ public class NewSMSSendTask extends AsyncTask<String,Void,String>
         	values.put("body", j.getString("message"));
         	owner.getBaseContext().getContentResolver().insert(Uri.parse("content://sms/sent"), values);
         	
+        	//We need to update the server hash
         	UpdateHashTask updateHashTask = new UpdateHashTask();
         	updateHashTask.owner = this.owner;
         	updateHashTask.inStatus = false;
@@ -101,6 +103,7 @@ public class NewSMSSendTask extends AsyncTask<String,Void,String>
    	        StringBuffer hexString = new StringBuffer();
    	        for (int i = 0; i < messageDigest.length; i++) {
    	            String h = Integer.toHexString(0xFF & messageDigest[i]);
+   	            //Otherwise we might miss a 0
    	            while (h.length() < 2)
    	                h = "0" + h;
    	            hexString.append(h);

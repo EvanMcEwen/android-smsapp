@@ -16,6 +16,7 @@ public class SMSReceiver extends BroadcastReceiver {
     	Bundle bundle = intent.getExtras();
     	SharedPreferences settings = context.getSharedPreferences("WebSMSActivity", 0);
 
+    	//We have to be logged in
     	if (settings.getBoolean("logged_in", false))
     	{
     	if (bundle != null) {

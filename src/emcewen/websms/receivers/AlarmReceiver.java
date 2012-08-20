@@ -15,6 +15,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 	public AlarmReceiver() {}
 	
+	//Alarm setup
     public AlarmReceiver(Activity context, int timeoutInMiliseconds){
         AlarmManager alarmMgr = 
             (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
@@ -28,6 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 	
 	@Override
+	//Called when the alarm fires
 	public void onReceive(Context context, Intent intent) {
 		SyncTask syncTask = new SyncTask();
     	syncTask.owner = context;

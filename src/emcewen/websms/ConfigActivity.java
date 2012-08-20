@@ -11,6 +11,7 @@ public class ConfigActivity extends Activity {
 	private AlarmReceiver myAlarm = null;
 	/** Called when the activity is first created. */
 	@Override
+	//On first launch start the alarm if it hasn't already been started
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.config);
@@ -19,12 +20,14 @@ public class ConfigActivity extends Activity {
 	}
 	
     @Override
+    //If the user resumes, start the alarm if it hasn't started for some reason
     protected void onResume() {
         super.onResume();
 	    if (myAlarm == null)
 	    	myAlarm = new AlarmReceiver(this,900000);
     }
     
+    //This handles the button press event
     public void performSync(View view)
     {
 		SyncTask syncTask = new SyncTask();

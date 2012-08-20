@@ -29,6 +29,7 @@ public class WebSMSActivity extends Activity {
             // TODO Auto-generated method stub
         	Log.d(TAG,intent.getAction());
         	
+        	//C2DM Registration was successful. Let's tell the web app
         	if (intent.getAction().equals(PUSH_READY))
         	{
 	        	//Get the C2DM RegistrationID
@@ -45,6 +46,7 @@ public class WebSMSActivity extends Activity {
 	            context.startService(serviceIntent);
         	}
         	
+        	//We're all setup!
         	if (intent.getAction().equals(PUSH_SUCCESS))
         	{
         		//Mark us as logged in
@@ -64,6 +66,7 @@ public class WebSMSActivity extends Activity {
     
     @Override
     protected void onResume() {
+    	//Setup our Broadcast filters manually
         IntentFilter filter = new IntentFilter();
         filter.addAction(PUSH_READY);
         filter.addAction(PUSH_SUCCESS);
@@ -81,6 +84,7 @@ public class WebSMSActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     	SharedPreferences settings = getPreferences(0);
+    	//If we aren't logged in at the moment
     	if (!settings.getBoolean("logged_in", false))
     	{
 	        setContentView(R.layout.main);
@@ -97,6 +101,7 @@ public class WebSMSActivity extends Activity {
     	}
     }
     
+    //Handles the button press event
     public void performLogin(View view) throws JSONException
     {
     	EditText usrTXT = (EditText)findViewById(R.id.usernameTXT);
@@ -118,6 +123,7 @@ public class WebSMSActivity extends Activity {
     	}
     }
     
+    //Start the registration service with C2DM
     public void pushSetup()
     {
     	//Save our username
@@ -130,6 +136,7 @@ public class WebSMSActivity extends Activity {
         super.startService(new Intent(C2DMRegistrationService.REGISTER_WITH_C2DM));
     }
     
+    //Called upon incorrect login
     public void resetLoginBoxes()
     {
     	EditText usrTXT = (EditText)findViewById(R.id.usernameTXT);

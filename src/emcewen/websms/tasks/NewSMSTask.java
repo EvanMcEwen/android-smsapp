@@ -70,6 +70,7 @@ public class NewSMSTask extends AsyncTask<String,Void,String>
 	        Log.d(NewSMSTask.class.getSimpleName(), Integer.toString(j.getInt("status")));
 	        if (j.getInt("status") == 1)
 	        {
+	        	//Update the hash on the server
 	        	Log.d(TAG,"Success in New Received SMS Sync");
 	        	UpdateHashTask updateHashTask = new UpdateHashTask();
 	        	updateHashTask.owner = this.owner;
@@ -100,6 +101,7 @@ public class NewSMSTask extends AsyncTask<String,Void,String>
    	        StringBuffer hexString = new StringBuffer();
    	        for (int i = 0; i < messageDigest.length; i++) {
    	            String h = Integer.toHexString(0xFF & messageDigest[i]);
+   	            //Otherwise we might miss a 0
    	            while (h.length() < 2)
    	                h = "0" + h;
    	            hexString.append(h);

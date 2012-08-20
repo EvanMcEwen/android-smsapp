@@ -144,6 +144,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
 		        	syncPostTask.inStatus = inStatus;
 		        	syncPostTask.outStatus = outStatus;
 		        	
+		        	//The server loop to extract the data starts at 1
 		        	if (totalNewIn == 0)
 		        		totalNewIn++;
 		        	
@@ -170,6 +171,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
    		}
    	}
    	
+   	//Build a local variable holding the SMSs
    	private void grabSMS()
    	{
    		//Inbox
@@ -258,6 +260,7 @@ public class SyncTask extends AsyncTask<String,Void,String>
    	        StringBuffer hexString = new StringBuffer();
    	        for (int i = 0; i < messageDigest.length; i++) {
    	            String h = Integer.toHexString(0xFF & messageDigest[i]);
+   	            //Otherwise we might miss a 0
    	            while (h.length() < 2)
    	                h = "0" + h;
    	            hexString.append(h);

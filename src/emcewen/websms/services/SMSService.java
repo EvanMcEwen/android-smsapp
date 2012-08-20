@@ -26,6 +26,7 @@ public class SMSService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         String action = intent.getAction();
 
+        //Decide what it is exactly we need to do
         if (NEW_SMS.equals(action)) {
         	this.syncNewSMS(intent.getExtras());
         }
@@ -34,6 +35,7 @@ public class SMSService extends IntentService {
         }
     }
     
+    //We have a new SMS we need to send!
     private void sendNewSMS(String msg_id)
     {
     	Log.d(TAG,"Starting NEW SMS To Send Sync Task");
@@ -42,6 +44,7 @@ public class SMSService extends IntentService {
     	smsSendTask.execute(msg_id);
     }
     
+    //We have a new SMS we need to sync!
     private void syncNewSMS(Bundle bundle)
     {
     	Log.d(TAG,"Starting SMS Sync Task");
